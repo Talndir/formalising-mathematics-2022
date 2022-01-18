@@ -28,104 +28,102 @@ variables (P Q R S : Prop)
 
 example : P → P ∨ Q :=
 begin
-  intro p,
+  intro hP,
   left,
-  exact p
+  exact hP,
 end
 
 example : Q → P ∨ Q :=
 begin
-  intro q,
+  intro hQ,
   right,
-  exact q
+  exact hQ,
 end
 
 example : P ∨ Q → (P → R) → (Q → R) → R :=
 begin
-  intros pq pr qr,
-  cases pq with p q,
-  { exact pr p },
-  { exact qr q }
+  intros hPoQ hPR hQR,
+  cases hPoQ with hP hQ,
+  { apply hPR,
+    exact hP },
+  { exact hQR hQ }
 end
 
 -- symmetry of `or`
 example : P ∨ Q → Q ∨ P :=
 begin
-  intro pq,
-  cases pq with p q,
-  { right, exact p },
-  { left, exact q }
+  intro hPoQ,
+  cases hPoQ with hP hQ,
+  { right, assumption },
+  { left, assumption }
 end
 
 -- associativity of `or`
 example : (P ∨ Q) ∨ R ↔ P ∨ (Q ∨ R) :=
 begin
   split,
-  { rintro ((p | q) | r),
-    left, exact p,
-    right, left, exact q,
-    right, right, exact r},
-  { rintro (p | q | r),
-    left, left, exact p,
-    left, right, exact q,
-    right, exact r}
+  { rintros ((hP | hQ) | hR),
+    { left, exact hP },
+    { right, left, exact hQ },
+    { right, right, exact hR } },
+  { rintros (hP | hQ | hR),
+    { left, left, exact hP },
+    { left, right, exact hQ },
+    { right, exact hR } }
 end
 
 example : (P → R) → (Q → S) → P ∨ Q → R ∨ S :=
 begin
-  intros pr qs pq,
-  cases pq with p q,
-  { left, exact pr p },
-  { right, exact qs q }
+  rintro hPR hQS (hP | hQ),
+  { left, apply hPR, exact hP },
+  { right, exact hQS hQ }
 end
 
 example : (P → Q) → P ∨ R → Q ∨ R :=
 begin
-  intros pq pr,
-  cases pr with p r,
-  { left, exact pq p },
-  { right, exact r }
+  intros hPQ h,
+  cases h with hP hR,
+  { left, apply hPQ, exact hP },
+  { right, exact hR }
 end
 
 example : (P ↔ R) → (Q ↔ S) → (P ∨ Q ↔ R ∨ S) :=
 begin
-  intros pr qs,
-  rw [pr, qs]
+  intros h1 h2,
+  rw [h1, h2],
 end
 
 -- de Morgan's laws
 example : ¬ (P ∨ Q) ↔ ¬ P ∧ ¬ Q :=
 begin
   split,
-  { intro npq,
+  { intro h,
     split,
-    { intro p,
-      apply npq,
-      left, exact p },
-    { intro q,
-      apply npq,
-      right, exact q } },
-  { intro npnq,
-    intro pq,
-    cases npnq with np nq,
-    cases pq with p q,
-    { exact np p },
-    { exact nq q } }
+    { intro hP,
+      apply h,
+      left, 
+      exact hP },
+    { intro hQ,
+      apply h,
+      right,
+      exact hQ } },
+  { rintro ⟨hnP, hnQ⟩ (hP | hQ),
+    { apply hnP, exact hP },
+    { exact hnQ hQ } }
 end
 
 example : ¬ (P ∧ Q) ↔ ¬ P ∨ ¬ Q :=
 begin
   split,
-  { intro npq,
-    by_cases h : P,
-    { have g : P → ¬ Q,
-      { intros p q,
-        exact npq ⟨p, q⟩},
-      right,
-      exact g h },
-    { left, exact h } },
-  { rintros npnq ⟨p, q⟩,
-    cases npnq with np nq,
-    { exact np p },
-    { exact nq q} }
+  { intro h,
+    by_cases hP : P,
+    { right,
+      intro hQ,
+      apply h,
+      exact ⟨hP, hQ⟩ },
+    { left,
+      exact hP } },
+  { rintro (hnP | hnQ) ⟨hP, hQ⟩,
+    { contradiction },
+    { apply hnQ, exact hQ } }
 end

@@ -1,5 +1,5 @@
 /-
-Copyright (c) 2022 Kevin Buzzard. All rights reserved.
+Copyright (c) 2021 Kevin Buzzard. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Author : Kevin Buzzard
 -/
@@ -21,7 +21,7 @@ equality in the "equality" section of Part B of the course notes.
 ## Tactics
 
 You'll need to know about the tactics from the previous sheets,
-and the following tactics may also be useful:
+and also the following tactics:
 
 * `change`
 * `by_contra`
@@ -35,70 +35,85 @@ variables (P Q R : Prop)
 
 example : ¬ true → false :=
 begin
-  intro nt,
-  apply nt,
-  triv
+  intro h,
+  change true → false at h,
+  apply h,
+  triv,
 end
 
 example : false → ¬ true :=
 begin
-  triv
+  intro h,
+  intro h2,
+  exact h,
 end
 
 example : ¬ false → true :=
 begin
-  intro nf,
-  triv
+  intro h,
+  triv,
 end
 
 example : true → ¬ false :=
 begin
-  intro t,
-  triv
+  intro h,
+  intro h2,
+  exact h2,
 end
 
 example : false → ¬ P :=
 begin
-  triv
+  intro h,
+  intro hP,
+  exact h,
 end
 
 example : P → ¬ P → false :=
 begin
-  intro p,
-  triv
+  intro hP,
+  intro hnP,
+  apply hnP,
+  exact hP,
 end
 
 example : P → ¬ (¬ P) :=
 begin
-  intro p,
-  triv
+  intro hP,
+  intro hnP,
+  apply hnP,
+  exact hP,
 end
 
 example : (P → Q) → (¬ Q → ¬ P) :=
 begin
-  intros pq nq p,
-  exact nq (pq p)
+  intros hPQ hnQ hP,
+  apply hnQ,
+  apply hPQ,
+  assumption,
 end
 
 example : ¬ ¬ false → false :=
 begin
-  intro nnf,
-  apply nnf,
-  triv
+  intro h,
+  apply h,
+  intro h2,
+  exact h2,
 end
 
--- Not constructive - uses contradiction
 example : ¬ ¬ P → P :=
 begin
-  intro nnp,
-  by_contra np,
-  exact nnp np
+  intro h,
+  by_contra h2,
+  apply h,
+  exact h2,
 end
 
--- Also not constructive (although its reverse is constructive)
 example : (¬ Q → ¬ P) → (P → Q) :=
 begin
-  intros nqnp p,
-  by_contra nq,
-  exact nqnp nq p
+  intros h hP,
+  change (Q → false) → (P → false) at h,
+  by_contra hnQ,
+  apply h,
+  { exact hnQ, },
+  { exact hP }
 end

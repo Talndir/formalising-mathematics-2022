@@ -26,82 +26,96 @@ variables (P Q R S : Prop)
 
 example : P ↔ P :=
 begin
-  refl
+  refl,
 end
 
 example : (P ↔ Q) → (Q ↔ P) :=
 begin
-  intro pq,
-  rw pq
+  intro h,
+  rw h,
 end
 
 example : (P ↔ Q) ↔ (Q ↔ P) :=
 begin
-  split,
-  { intro pq,
-    rw pq },
-  { intro qp,
-    rw qp }
+  split;
+  { intro h,
+    rw h}
 end
 
 example : (P ↔ Q) → (Q ↔ R) → (P ↔ R) :=
 begin
-  intros pq qr,
-  rwa pq
+  intros h1 h2,
+  rwa h1, -- rwa is rw + assumption
 end
 
 example : P ∧ Q ↔ Q ∧ P :=
 begin
-  split,
-  { rintro ⟨p, q⟩,
-    exact ⟨q, p⟩ },
-  { rintro ⟨q, p⟩,
-    exact ⟨p, q⟩ }
+  split;
+  { rintro ⟨h1, h2⟩,
+    exact ⟨h2, h1⟩ }
 end
 
 example : ((P ∧ Q) ∧ R) ↔ (P ∧ (Q ∧ R)) :=
 begin
   split,
-  { rintro ⟨⟨p, q⟩, r⟩,
-    exact ⟨p, ⟨q, r⟩⟩ },
-  { rintro ⟨p, q, r⟩,
-    exact ⟨⟨p, q⟩, r⟩ }
+  { intro h,
+    cases h with hPaQ hR,
+    cases hPaQ with hP hQ,
+    split,
+    { exact hP },
+    { split,
+      { exact hQ },
+      { exact hR } } },
+  { rintro ⟨hP, hQ, hR⟩,
+    exact ⟨⟨hP, hQ⟩, hR⟩ }
 end
 
 example : P ↔ (P ∧ true) :=
 begin
   split,
-  { intro p,
+  { intro hP,
     split,
-    exact p, triv  },
-  { rintro ⟨p, -⟩,
-    exact p }
+    { exact hP },
+    { triv } },
+  { rintro ⟨hP, -⟩,
+    exact hP }
 end
 
 example : false ↔ (P ∧ false) :=
 begin
   split,
-  { intro f, cases f },
-  { rintro ⟨-,f⟩, exact f }
+  { rintro ⟨⟩ },
+  { rintro ⟨-,⟨⟩⟩ }
 end
 
 example : (P ↔ Q) → (R ↔ S) → (P ∧ R ↔ Q ∧ S) :=
 begin
-  intros pq rs,
-  split,
-  { rintro ⟨p, r⟩,
-    rw [← pq, ← rs],
-    exact ⟨p, r⟩ },
-  { rintro ⟨q, s⟩,
-    rw [pq, rs],
-    exact ⟨q, s⟩ }
+  intros h1 h2,
+  rw h1,
+  rw h2,
 end
 
 example : ¬ (P ↔ ¬ P) :=
 begin
-  intro pnp,
-  cases pnp with p np,
-  by_cases h : P,
-  { exact p h h },
-  { exact h (np h) }
+  intro h,
+  cases h with h1 h2,
+  by_cases hP : P,
+  { apply h1; assumption },
+  { apply hP,
+    apply h2,
+    exact hP }
+end
+
+-- constructive proof
+example : ¬ (P ↔ ¬ P) :=
+begin
+  intro h,
+  have hnP : ¬ P,
+  { cases h with h1 h2,
+    intro hP,
+    apply h1;
+    assumption },
+  apply hnP,
+  rw h,
+  exact hnP,
 end

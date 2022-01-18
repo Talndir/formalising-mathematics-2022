@@ -28,72 +28,67 @@ variables (P Q R : Prop)
 
 example : P ∧ Q → P :=
 begin
-  intro pq,
-  cases pq with p q,
-  exact p
+  intro hPaQ,
+  cases hPaQ with hP hQ,
+  exact hP,
 end
 
 example : P ∧ Q → Q :=
 begin
-  intro pq,
-  cases pq with p q,
-  exact q
+  rintro ⟨hP, hQ⟩,
+  assumption,
 end
 
 example : (P → Q → R) → (P ∧ Q → R) :=
 begin
-  intros pqr pq,
-  cases pq with p q,
-  apply pqr,
-  exact p, exact q
+  rintro hPQR ⟨hP, hQ⟩,
+  apply hPQR;
+  assumption,
 end
 
 example : P → Q → P ∧ Q :=
 begin
-  intros p q,
+  intro hP,
+  intro hQ,
   split,
-  exact p, exact q
+  { exact hP },
+  { exact hQ }
 end
 
 /-- `∧` is symmetric -/
 example : P ∧ Q → Q ∧ P :=
 begin
-  intro pq,
-  cases pq with p q,
-  split,
-  exact q, exact p
+  rintro ⟨hP, hQ⟩,
+  exact ⟨hQ, hP⟩,
 end
 
 example : P → P ∧ true :=
 begin
-  intro p,
+  intro hP,
   split,
-  exact p, triv
+  { exact hP },
+  { triv },
 end
 
 example : false → P ∧ false :=
 begin
-  intro f,
+  intro h,
   exfalso,
-  exact f
+  exact h,
 end
 
 /-- `∧` is transitive -/
 example : (P ∧ Q) → (Q ∧ R) → (P ∧ R) :=
 begin
-  intros pq qr,
-  cases pq with p q,
-  cases qr with q' r,
-  split,
-  exact p, exact r
+  rintro ⟨hP, hQ⟩ ⟨-, hR⟩,
+  exact ⟨hP, hR⟩,
 end
 
 example : ((P ∧ Q) → R) → (P → Q → R) :=
 begin
-  intros pqr p q,
-  apply pqr,
-  split,
-  exact p, exact q
+  intros h hP hQ,
+  apply h,
+  split; assumption,
 end
 
 
