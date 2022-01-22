@@ -25,26 +25,42 @@ knows that the real numbers are a ring. See if you can use
 
 example (x y : ℝ) : (x + y) ^ 2  = x ^ 2 + 2 * x * y + y ^ 2 :=
 begin
-  sorry
+  ring
 end
 
 example : ∀ (a b : ℝ), ∃ x, 
   (a + b) ^ 3 = a ^ 3 + x * a ^ 2 * b + 3 * a * b ^ 2 + b ^ 3 :=
 begin
-  sorry,
+  intros a b,
+  use 3,
+  ring
 end
 
 example : ∃ (x : ℝ), ∀ y, y + y = x * y :=
 begin
-  sorry
+  use 2,
+  intro y,
+  ring
 end
 
 example : ∀ (x : ℝ), ∃ y, x + y = 2 :=
 begin
-  sorry
+  intro x,
+  use 2 - x,
+  ring
 end
 
 example : ∀ (x : ℝ), ∃ y, x + y ≠ 2 :=
 begin
-  sorry,
+  intro x,
+  norm_num,
+  by_cases x = 2,
+  { use 1,
+    rw h,
+    norm_num },
+  { use 0,
+    by_contra h',
+    apply h,
+    rw ← h',
+    norm_num }
 end

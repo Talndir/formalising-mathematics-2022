@@ -13,7 +13,10 @@ import section02reals.sheet3 -- import the definition of `tendsto` from a previo
 theorem tendsto_neg {a : ℕ → ℝ} {t : ℝ} (ha : tendsto a t) :
   tendsto (λ n, - a n) (-t) :=
 begin
-  sorry,
+  rw tendsto_def at ha ⊢,
+  simp_rw abs_sub_comm,
+  norm_num,
+  exact ha
 end
 
 /-
@@ -33,7 +36,20 @@ theorem tendsto_add {a b : ℕ → ℝ} {t u : ℝ}
   (ha : tendsto a t) (hb : tendsto b u) :
   tendsto (λ n, a n + b n) (t + u) :=
 begin
-  sorry
+  rw tendsto_def at ha hb ⊢,
+  intros ε hε,
+  specialize ha (ε/2) (by linarith),
+  specialize hb (ε/2) (by linarith),
+  cases ha with Ba ha,
+  cases hb with Bb hb,
+  use (Ba + Bb),
+  intros n hab,
+  specialize ha n (by linarith),
+  specialize hb n (by linarith),
+  have h : |a n - t| + |b n - u| < ε := by linarith,
+  have h : |(a n - t) + (b n - u)| ≤ |a n - t| + |b n - u| := by apply abs_add,
+  ring_nf at h ⊢,
+  linarith
 end
 
 /-- If `a(n)` tends to t and `b(n)` tends to `u` then `a(n) - b(n)`
@@ -43,6 +59,6 @@ theorem tendsto_sub {a b : ℕ → ℝ} {t u : ℝ}
   tendsto (λ n, a n - b n) (t - u) :=
 begin
   -- this one follows without too much trouble from earlier results.
-  sorry
+  exact tendsto_add ha (tendsto_neg hb)
 end
 
