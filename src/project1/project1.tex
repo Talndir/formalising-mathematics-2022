@@ -1,0 +1,217 @@
+\documentclass[a4paper, twoside, 11pt]{article}
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{amsmath, amssymb, amsthm}
+%\usepackage{esint}
+%\usepackage{isomath}
+\usepackage{parskip}
+
+\begingroup
+    \makeatletter
+    \@for\theoremstyle:=definition,remark,plain\do{%
+        \expandafter\g@addto@macro\csname th@\theoremstyle\endcsname{%
+            \addtolength\thm@preskip\parskip
+            }%
+        }
+\endgroup
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{algorithm}[definition]{Algorithm}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{proposition}[definition]{Proposition}
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+\renewcommand{\vec}{\vectorsym}
+
+\title{Formalising Mathematics - Project 1 \\ Analysis - Limits, continuity and convergence}
+\author{Omar Tahir}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+In this project I formalised the notions of limits, continuity and convergence of real-valued functions.
+
+\section{Limits}
+
+In \emph{project1.limits} I formalised the following:
+\begin{itemize}
+    \item Definitions:
+    \begin{itemize}
+        \item The finite limit of a real-valued function at a point.
+        \item The finite limit of a real-valued function at a point, from the left.
+        \item The finite limit of a real-valued function at a point, from the right.
+    \end{itemize}
+    \item Proofs:
+    \begin{itemize}
+        \item If $f(x) = c$ is constant then $f \rightarrow c$ everywhere.
+        \item If $f \rightarrow L$ and $g \rightarrow M$ then $f + g \rightarrow L + M$.
+        \item If $f \rightarrow L$ then for constant $c$, $cf \rightarrow cL$.
+        \item If $f \rightarrow L$ then $f^{2} \rightarrow L^{2}$.
+        \item If $f \rightarrow L$ and $g \rightarrow M$ then $fg \rightarrow LM$.
+        \item The limit exists iff the left and right limits exist and agree.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Definitions}
+
+I chose to only define and prove properties of finite limits. Infinite limits would be no harder, but it wouldn't be any more interesting than what I've already done as the definitions are so similar.
+
+\subsection*{Design}
+
+The properties and proofs are very similar to those of sequences in section 2. Initially I implemented the same proof of products of limits:
+\begin{enumerate}
+    \item Rewrite $fg - LM$ as $(f - L)(g - M) + L(g - M) + M(f - L)$.
+    \item Prove that if $f \rightarrow L$ then $f - L \rightarrow 0$.
+    \item Prove that if $f \rightarrow 0$ and $g \rightarrow 0$ then $fg \rightarrow 0$.
+    \item Combine the above.
+\end{enumerate}
+
+However, I didn't want to be boring and do everything the same as in the problem sheets, so instead I opted for a more...interesting, proof as follows:
+\begin{enumerate}
+    \item Rewrite $fg$ as $\frac{1}{2}\left( \left( f + g \right)^{2} - f^{2} - g^{2} \right)$.
+    \item Prove that if $f \rightarrow L$ then $cf \rightarrow cL$ for $c$ constant.
+    \item Prove that if $f \rightarrow L$ then $f^{2} \rightarrow L^{2}$.
+    \item Combine the above.
+\end{enumerate}
+
+The proof that squaring the function squares the limit is the most interesting one:
+
+\subsection*{Featured proof: The square of the limit is the limit of the square}
+
+The key is setting $\epsilon' < \sqrt{L^{2} + \epsilon} - \left\lvert L \right\rvert$. This is derived as follows:
+
+\begin{align*}
+    \epsilon
+    &> \left\lvert f^{2}(x) - L^{2} \right\rvert \\
+    &= \left\lvert (f(x) + L)(f(x) - L) \right\rvert \\
+    &= \left\lvert f(x) + L \right\rvert \left\lvert f(x) - L \right\rvert \\
+    &> \left\lvert f(x) - L + 2L \right\rvert \epsilon \\
+    &> \left(\left\lvert f(x) - L \right\rvert + 2 \left\lvert L \right\rvert\right)\epsilon \\
+    &> \epsilon\left( \epsilon + 2|L| \right)
+.\end{align*}
+
+Solving this quadratic yields the above definition for $\epsilon'$.
+
+Of course, we need $\epsilon' < \sqrt{L^{2} + \epsilon} - \left\lvert L \right\rvert$, not equal to it, so I chose $\epsilon' = \frac{1}{2}\left( \sqrt{L^{2} + \epsilon} - \left\lvert L \right\rvert \right)$. In practice however, this inequality was very difficult to manipulate: inserting this into the equation $\epsilon'(\epsilon' + 2|L|)$ ended up with a term that was difficult to prove was less than $\epsilon$.
+
+Instead, I opted to let $e = 2\epsilon'$ and prove both that $\epsilon < e$ and $e(e + 2|L|) = \epsilon$, which completes the proof.
+
+
+\section{Continuity}
+
+In \emph{project1.continuity} I formalised the following:
+\begin{itemize}
+    \item Definitions:
+    \begin{itemize}
+        \item Continuity at a point.
+        \item Uniform continuity.
+    \end{itemize}
+    \item Proofs:
+    \begin{itemize}
+        \item If $f(x) = c$ is constant then $f$ is uniformly continuous everywhere.
+        \item The identity function is uniformly continuous.
+        \item If $f$ and $g$ are uniformly continuous then so is $f + g$.
+        \item If $f$ is uniformly continuous then so is $cf$, $c$ constant.
+        \item If $f$ and $g$ are continuous then so is $f + g$.
+        \item If $f$ and $g$ are continuous then so is $fg$.
+        \item Uniform continuity implies continuity.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Definitions}
+
+The definition of continuity can be written in two ways, directly or via the definition of limits:
+
+\begin{enumerate}
+    \item $\forall \epsilon > 0\ \exists \delta > 0\ :\ \forall x \in \mathbb{R},\, 0 < |p - x| < \delta \implies |f(p) - f(x)| < \epsilon$.
+    \item $\lim_{x \to p} f(x) = f(p)$.
+\end{enumerate}
+
+I chose to define it in the second way. For ease of use I defined two definitional theorems, one that rewrites the continuity definition in terms of limits, and one that rewrites it further into $\epsilon$-$\delta$ form.
+
+For uniform continuity, due to the placement of the universal quantifier, no analogue to limits was possible.
+
+\subsection*{Design}
+
+Fewer tricky proofs were needed here compared to limits as certain properties just don't hold for uniform continuity (e.g. product: $f(x) = x$ is uniformly continuous but $f^{2}(x) = x^{2}$ is not).
+
+For regular continuity, because the definition is simply a limit, I re-used all the limit proofs to prove the necessary theorems in a single line each.
+
+I wanted to prove that all polynomials are continuous, however I encountered two problems. The first is that I lack the knowledge of how to prove a property by induction or using a recursion scheme, and the easiest way to complete the proof is to induct on the degree of the polynomial. The second is that I couldn't figure out how to manipulate the \emph{polynomial} typeclass. It seems to represent generic polynomials over semirings, but I couldn't see a mechanism for turning a polynomial from that representation to an explicit function. In fact, even more than that, I would have needed a syntactic representation of the function (something like a list of coefficients) to complete the proof, and then a way to turn \emph{that} into a function object, which I definitely have no idea how to do.
+
+\subsection*{Featured proof: Uniform continuity implies continuity}
+
+This proof was very straightforward: if $\delta$ works for all $x$ then it definitely works for any specific $x$, so the argument is trivial. However, because of the placement of the universal quantifier being deeper in the uniform case, the proof required manually unrolling the definitions until the quantifier was introduced, at which point the remaining parts of both definions are equal and the proof is complete.
+
+This proof would have been a one-liner if there was a theorem in the library of something like, ``If you can pull a universal quantifier out of $h_{1}$ to produce $h_{2}$ then $h_{2} \implies h_{1}$.''
+
+
+\section{Convergence}
+
+In \emph{project1.convergence} I formalised the following:
+\begin{itemize}
+    \item Definitions:
+    \begin{itemize}
+        \item Convergence of functions.
+        \item Uniform convergence of functions.
+    \end{itemize}
+    \item Proofs:
+    \begin{itemize}
+        \item Uniform convergence implies convergence.
+        \item Uniform convergence preserves continuity.
+        \item Uniform convergence preserves uniform continuity.
+    \end{itemize}
+\end{itemize}
+
+
+\subsection{Definitions}
+
+The definitions were straightforward; like with continuity, pointwise convergence reused the definition of limits of sequences from the problem sheets, whereas uniform convergence could not due to the presence of the extra universal quantifier making them structurally dissimilar statements.
+
+\subsection*{Design}
+
+There wasn't much to prove here. The proofs were straightforward.
+
+I wanted to prove an additional theorem: that pointwise convergence does not imply continuity. This would have automatically proven that pointwise convergence does not imply uniform convergence also. However, I was unable to prove the theorem as I was unable to find an example of a sequence of functions that satisfied the following properties:
+
+\begin{enumerate}
+    \item The sequence must converge pointwise to some limit $F$.
+    \item $F$ must not be continuous.
+    \item $F$ and the sequence leading to it must not be piecewise.
+\end{enumerate}
+
+I tried to figure out how to use piecewise functions but in the end I couldn't get it working. An example of an explicitly defined, discontinuous, non-piecewise function doesn't exist as far as I can tell, at least if one is restricted to elementary functions. So in the end I had to give up as I had no way of defining the limit function.
+
+\subsection{Featured proof: Uniform convergence preserves continuity}
+
+This argument proceeded by the standard $\epsilon/3$ argument: we make the following three inequalities:
+
+\begin{itemize}
+    \item $|F(x) - f_{n}(x)| < \frac{\epsilon}{3}$ (by uniform convergence at $x$).
+    \item $|f_{n}(x) - f_{n}(p)| < \frac{\epsilon}{3}$ (by continuity of $f_{n}$ as $x \rightarrow p$).
+    \item $|f_{n}(p) - F(p)| < \frac{\epsilon}{3}$ (by uniform convergence at $p$).
+\end{itemize}
+
+These can then be combined with two triangle inequalities to produce the desired $|F(x) - F(p)| < \epsilon$.
+
+The proof for preserving uniform continuity is precisely identical, except that $p$ is replaced by the other (universally quantified) point $y$. It's a shame that the structures of the proofs are so similar yet need to be written out again completely; in this case I'm not sure how to get around this. I suppose the general property is that
+
+\begin{center}
+If $P$ holds for continuous functions, and every $\epsilon$ and $\delta$ during the proof is chosen independently of any particular point, then $P$ also holds for uniformly continuous functions.
+\end{center}
+
+It intuitively checks out, but how to actually formalise such a thing on paper, let alone on a machine, is beyond me at the moment.
+
+\end{document}
