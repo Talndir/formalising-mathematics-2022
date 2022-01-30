@@ -126,7 +126,10 @@ we can make it a `simp` lemma.
 
 @[simp] theorem inv_mem_iff {x : G} : x⁻¹ ∈ H ↔ x ∈ H := 
 begin
-  sorry
+  split; intro h,
+  { have h' : (x⁻¹)⁻¹ ∈ H := H.inv_mem h,
+    simpa using h', },
+  { exact H.inv_mem h }
 end
 
 -- We could prove a bunch more theorems here. Let's just do two more.
@@ -134,13 +137,21 @@ end
 theorem mul_mem_cancel_left {x y : G} (hx : x ∈ H) :
   x * y ∈ H ↔ y ∈ H :=
 begin
-  sorry
+  split; intro h,
+  { have hx' : x⁻¹ ∈ H := H.inv_mem hx,
+    have h' : x⁻¹ * (x * y) ∈ H := H.mul_mem hx' h,
+    simpa using h' },
+  { exact H.mul_mem hx h }
 end
 
 theorem mul_mem_cancel_right {x y : G} (hx : x ∈ H) :
   y * x ∈ H ↔ y ∈ H :=
 begin
-  sorry
+  split; intro h,
+  { have hx' : x⁻¹ ∈ H := H.inv_mem hx,
+    have h' : y * x * x⁻¹ ∈ H := H.mul_mem h hx',
+    simpa using h' },
+  { exact H.mul_mem h hx }
 end
 
 end mysubgroup
