@@ -86,36 +86,63 @@ begin
   -- you can start with `rw injective_def` if you like,
   -- and later you can `rw id_eval`, although remember that `rw` doesn't
   -- work under binders like `∀`, so use `intro` first.
-  sorry
+  intros a b,
+  intro h,
+  exact h,
 end
 
 example : surjective (id : X → X) :=
 begin
-  sorry
+  intro x,
+  use x,
+  refl,
 end
 
 example (f : X → Y) (g : Y → Z) (hf : injective f) (hg : injective g) :
   injective (g ∘ f) :=
 begin
-  sorry
+  intros a b,
+  rw injective_def at hf hg,
+  specialize hf a b,
+  specialize hg (f a) (f b),
+  rw [comp_eval, comp_eval],
+  intro h,
+  simp * at *,
 end
 
 example (f : X → Y) (g : Y → Z) (hf : surjective f) (hg : surjective g) :
   surjective (g ∘ f) :=
 begin
-  sorry
+  rw surjective_def at *,
+  intro z,
+  obtain ⟨y,hy⟩ := hg z,
+  obtain ⟨x,hx⟩ := hf y,
+  use x,
+  rw comp_eval,
+  simp *,
 end
 
 -- This is a question on the IUM (Imperial introduction to proof course) function problem sheet
 example (f : X → Y) (g : Y → Z) : 
   injective (g ∘ f) → injective f :=
 begin
-  sorry
+  intro h,
+  rw injective_def at *,
+  intros a b hf,
+  specialize h a b,
+  rw [comp_eval, comp_eval] at h,
+  rw hf at h,
+  exact h (refl (g (f b))),
 end
 
 -- This is another one
 example (f : X → Y) (g : Y → Z) : 
   surjective (g ∘ f) → surjective g :=
 begin
-  sorry
+  intro h,
+  rw surjective_def at *,
+  intro z,
+  obtain ⟨x,hx⟩ := h z,
+  use (f x),
+  exact hx,
 end
