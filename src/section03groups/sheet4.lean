@@ -203,7 +203,12 @@ def comap (f : G →** H) (K : subgroup H) : subgroup G :=
 
 lemma map_id (L : subgroup G) : (id G).map L = L :=
 begin
-  sorry
+  ext,
+  split; intro h,
+  { rcases h with ⟨y, hy1, rfl⟩,
+    exact hy1, },
+  { use x,
+    exact ⟨h, refl x⟩, }
 end
 
 /-- Pushing a subgroup along one homomorphism and then another is equal to
@@ -218,7 +223,8 @@ end
 
 lemma comap_id (L : subgroup G) : (id G).comap L = L :=
 begin
-  sorry
+  ext,
+  refl,
 end
 
 /-- Pulling a subgroup back along one homomorphism and then another, is equal
