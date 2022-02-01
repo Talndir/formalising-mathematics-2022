@@ -82,6 +82,14 @@ begin
   refl
 end
 
+-- Now we have some nicer notation we can write a nicer extensionality lemma 
+/-- Two subgroups of a group are equal iff they have the same elements. -/
+@[ext] def ext' (H K : mysubgroup G) (h : ∀ g : G, g ∈ H ↔ g ∈ K) : H = K :=
+begin
+  ext x,
+  exact h x,
+end
+
 -- We now start reformulating the axioms without ever mentioning "carrier".
 theorem one_mem : (1 : G) ∈ H :=
 begin

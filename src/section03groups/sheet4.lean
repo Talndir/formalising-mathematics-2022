@@ -201,6 +201,11 @@ def comap (f : G →** H) (K : subgroup H) : subgroup G :=
   end,
 }
 
+lemma map_id (L : subgroup G) : (id G).map L = L :=
+begin
+  sorry
+end
+
 /-- Pushing a subgroup along one homomorphism and then another is equal to
   pushing it forward along the composite of the homomorphisms. -/
 lemma map_comp (φ : G →** H) (ψ : H →** K) (L : subgroup G) :
@@ -209,6 +214,11 @@ begin
   ext,
   simp [map, map],
   split; intro h; exact h,
+end
+
+lemma comap_id (L : subgroup G) : (id G).comap L = L :=
+begin
+  sorry
 end
 
 /-- Pulling a subgroup back along one homomorphism and then another, is equal
