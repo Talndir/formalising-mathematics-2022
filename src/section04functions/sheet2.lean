@@ -43,16 +43,22 @@ def g : Y → Z
 | Y.c := Z.d
 
 -- examples of how these things work
-example (z : Z) : z = Z.d :=
+lemma z_singleton (z : Z) : z = Z.d :=
 begin
   cases z,
   refl,
 end
 
-example : Y.b ≠ Y.c :=
+lemma yb_not_yc : Y.b ≠ Y.c :=
 begin
   intro h, -- x ≠ y is definitionally equal to (x = y) → false
   cases h, -- no cases when they're equal!
+end
+
+lemma x_singleton (x : X) : x = X.a :=
+begin
+  cases x,
+  refl,
 end
 
 
@@ -60,17 +66,35 @@ open function
 
 lemma gf_injective : injective (g ∘ f) :=
 begin
-  sorry,
+  intros a b,
+  rw [x_singleton a, x_singleton b],
+  simp,
 end
 
 -- This is a question on the IUM (Imperial introduction to proof course) function problem sheet
 example : ¬ (∀ X Y Z : Type, ∀ (f : X → Y) (g : Y → Z), injective (g ∘ f) → injective g) :=
 begin
-  sorry,
+  intro h,
+  specialize h X Y Z f g gf_injective,
+  apply yb_not_yc,
+  apply h,
+  refl,
+end
+
+lemma gf_surjective : surjective (g ∘ f) :=
+begin
+  intro z,
+  rw z_singleton z,
+  use X.a,
+  refl,
 end
 
 -- This is another one
 example : ¬ (∀ X Y Z : Type, ∀ (f : X → Y) (g : Y → Z), surjective (g ∘ f) → surjective f) :=
 begin
-  sorry,
+  intro h,
+  obtain ⟨x,hx⟩ := h X Y Z f g gf_surjective Y.c,
+  rw x_singleton x at hx,
+  apply yb_not_yc,
+  contradiction,
 end
