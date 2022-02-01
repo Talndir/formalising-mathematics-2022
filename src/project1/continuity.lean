@@ -3,6 +3,7 @@
 import tactic
 import data.real.basic
 import project1.limits
+import data.polynomial.eval
 
 namespace project1
 
@@ -101,6 +102,16 @@ theorem continuous_mul {f g : ℝ → ℝ} {p : ℝ}
   (hf : continuous f p) (hg : continuous g p) : continuous (λ x, f x * g x) p :=
 limit_mul hf hg
 
+/- A constant multiplied by a continuous function is continuous. -/
+theorem continuous_const_mul {f : ℝ → ℝ} {p : ℝ}
+  (h : continuous f p) (c : ℝ) : continuous (λ x, c * f x) p :=
+limit_const_mul h c
+
+/- Raising a continuous function to a non-negative power preserves continuity. -/
+theorem continuous_nonneg_pow {f : ℝ → ℝ} {p : ℝ}
+  (h : continuous f p) (n : ℕ) : continuous (λ x, (f x) ^ n) p :=
+limit_nonneg_pow h n
+
 /- Uniform continuity implies continuity everywhere. -/
 theorem unif_continuous_impl_continuous {f : ℝ → ℝ} :
   unif_continuous f → ∀ x : ℝ, continuous f x :=
@@ -117,6 +128,29 @@ begin
   -- Rename bound variables and rearrange to make Lean see them as equal
   rename_var x y,
   simpa [abs_sub_comm] using hf',
+end
+
+/- Polynomials are continuous. -/
+theorem continuous_polynomial (f : polynomial ℝ) :
+  ∀ x : ℝ, continuous (λ y, f.eval y) x :=
+begin
+  apply polynomial.induction_on' f,
+  /- Additive case: if p and continuous, so is p + q -/
+  { intros p q hp hq x,
+    specialize hp x,
+    specialize hq x,
+    convert continuous_add hp hq,
+    simp, },
+  /- Monomial case: axⁿ is continuous for all a and n -/
+  { intros n a x,
+    simp,
+    exact continuous_const_mul (
+            continuous_nonneg_pow (
+              unif_continuous_impl_continuous (
+                unif_continuous_id
+              ) x
+            ) n) a,
+  }
 end
 
 end project1

@@ -182,6 +182,18 @@ begin
   ) (1/2)
 end
 
+/- If f -> L and n : ℕ then fⁿ -> Lⁿ. -/
+theorem limit_nonneg_pow {f : ℝ → ℝ} {p L : ℝ}
+  (h : limit f p L) (n : ℕ) : limit (λ x, (f x) ^ n) p (L ^ n) :=
+begin
+  induction n with n ih,
+  { simp,
+    exact limit_const 1 p, },
+  { rw pow_succ,
+    simp_rw pow_succ,
+    exact limit_mul h ih, }
+end
+
 /- Definition of one-sided limits. -/
 def limit_left (f : ℝ → ℝ) (p : ℝ) (L : ℝ) : Prop :=
   ∀ ε > 0, ∃ δ > 0, ∀ x : ℝ, x < p ∧ p - x < δ → |f x - L| < ε

@@ -55,11 +55,12 @@ In \emph{project1.limits} I formalised the following:
     \end{itemize}
     \item Proofs:
     \begin{itemize}
-        \item If $f(x) = c$ is constant then $f \rightarrow c$ everywhere.
-        \item If $f \rightarrow L$ and $g \rightarrow M$ then $f + g \rightarrow L + M$.
-        \item If $f \rightarrow L$ then for constant $c$, $cf \rightarrow cL$.
-        \item If $f \rightarrow L$ then $f^{2} \rightarrow L^{2}$.
-        \item If $f \rightarrow L$ and $g \rightarrow M$ then $fg \rightarrow LM$.
+        \item If $f(x) = c$ is constant then $f \to c$ everywhere.
+        \item If $f \to L$ and $g \to M$ then $f + g \to L + M$.
+        \item If $f \to L$ then for constant $c$, $cf \to cL$.
+        \item If $f \to L$ then $f^{2} \to L^{2}$.
+        \item If $f \to L$ and $g \to M$ then $fg \to LM$.
+        \item If $f \to L$ then $f^{n} \to L^{n}$.
         \item The limit exists iff the left and right limits exist and agree.
     \end{itemize}
 \end{itemize}
@@ -73,16 +74,16 @@ I chose to only define and prove properties of finite limits. Infinite limits wo
 The properties and proofs are very similar to those of sequences in section 2. Initially I implemented the same proof of products of limits:
 \begin{enumerate}
     \item Rewrite $fg - LM$ as $(f - L)(g - M) + L(g - M) + M(f - L)$.
-    \item Prove that if $f \rightarrow L$ then $f - L \rightarrow 0$.
-    \item Prove that if $f \rightarrow 0$ and $g \rightarrow 0$ then $fg \rightarrow 0$.
+    \item Prove that if $f \to L$ then $f - L \to 0$.
+    \item Prove that if $f \to 0$ and $g \to 0$ then $fg \to 0$.
     \item Combine the above.
 \end{enumerate}
 
 However, I didn't want to be boring and do everything the same as in the problem sheets, so instead I opted for a more...interesting, proof as follows:
 \begin{enumerate}
     \item Rewrite $fg$ as $\frac{1}{2}\left( \left( f + g \right)^{2} - f^{2} - g^{2} \right)$.
-    \item Prove that if $f \rightarrow L$ then $cf \rightarrow cL$ for $c$ constant.
-    \item Prove that if $f \rightarrow L$ then $f^{2} \rightarrow L^{2}$.
+    \item Prove that if $f \to L$ then $cf \to cL$ for $c$ constant.
+    \item Prove that if $f \to L$ then $f^{2} \to L^{2}$.
     \item Combine the above.
 \end{enumerate}
 
@@ -126,6 +127,8 @@ In \emph{project1.continuity} I formalised the following:
         \item If $f$ is uniformly continuous then so is $cf$, $c$ constant.
         \item If $f$ and $g$ are continuous then so is $f + g$.
         \item If $f$ and $g$ are continuous then so is $fg$.
+        \item If $f$ is continuous then so is $cf$ where $c$ is constant.
+        \item If $f$ is continuous then so is $f^{n}$.
         \item Uniform continuity implies continuity.
     \end{itemize}
 \end{itemize}
@@ -149,13 +152,21 @@ Fewer tricky proofs were needed here compared to limits as certain properties ju
 
 For regular continuity, because the definition is simply a limit, I re-used all the limit proofs to prove the necessary theorems in a single line each.
 
-I wanted to prove that all polynomials are continuous, however I encountered two problems. The first is that I lack the knowledge of how to prove a property by induction or using a recursion scheme, and the easiest way to complete the proof is to induct on the degree of the polynomial. The second is that I couldn't figure out how to manipulate the \emph{polynomial} typeclass. It seems to represent generic polynomials over semirings, but I couldn't see a mechanism for turning a polynomial from that representation to an explicit function. In fact, even more than that, I would have needed a syntactic representation of the function (something like a list of coefficients) to complete the proof, and then a way to turn \emph{that} into a function object, which I definitely have no idea how to do.
+My initial goal was to prove that all polynomials are continuous, however I encountered two problems. The first was that I lack the knowledge of how to prove a property by induction or using a recursion scheme, and the easiest way to complete the proof is to induct on the degree of the polynomial. The second is that I couldn't figure out how to manipulate the \emph{polynomial} typeclass. Luckily we covered induction in the week this project was due, and in the lecture that week I asked about polynomials and the lecturer showed me how to evaluate polynomials at a point and that there was an induction scheme built-in.
 
-\subsection*{Featured proof: Uniform continuity implies continuity}
+\subsection*{Featured proof: All polynomials are continuous}
 
-This proof was very straightforward: if $\delta$ works for all $x$ then it definitely works for any specific $x$, so the argument is trivial. However, because of the placement of the universal quantifier being deeper in the uniform case, the proof required manually unrolling the definitions until the quantifier was introduced, at which point the remaining parts of both definions are equal and the proof is complete.
+The induction scheme for polynomials was as follows: if we have a property $P$ on polynomials over $K[X]$ then
+\begin{align*}
+    \left(\forall p,q \in K[X],\, P(p) \wedge P(q) \implies P(p + q)\right) \wedge \\
+    \left(\forall a \in K,\,n \in \mathbb{N}, P(ax^{n})\right) \implies \\
+    \forall p \in K[X],\,P(p)
+.\end{align*}
+i.e. I have to prove the property holds under sums and for all monomials.
 
-This proof would have been a one-liner if there was a theorem in the library of something like, ``If you can pull a universal quantifier out of $h_{1}$ to produce $h_{2}$ then $h_{2} \implies h_{1}$.''
+The additive case was trivial as I had already proven that the sum of any two continuous functions is continuous.
+
+The monomial case was also easy - if we rewrite $ax^{n}$ more explicitly as $mul(a, pow(x, n))$ then it's clear that all we need to do is apply theorems we've already proven, namely that continuity is preserved under multiplication by a constant and under non-negative powers. The final step is to prove that the identity function is continuous; I did not prove this explicitly, but since I proved that it's uniformly continuous I used the fact that uniform continuity implies continuity to get it for free.
 
 
 \section{Convergence}
@@ -200,7 +211,7 @@ This argument proceeded by the standard $\epsilon/3$ argument: we make the follo
 
 \begin{itemize}
     \item $|F(x) - f_{n}(x)| < \frac{\epsilon}{3}$ (by uniform convergence at $x$).
-    \item $|f_{n}(x) - f_{n}(p)| < \frac{\epsilon}{3}$ (by continuity of $f_{n}$ as $x \rightarrow p$).
+    \item $|f_{n}(x) - f_{n}(p)| < \frac{\epsilon}{3}$ (by continuity of $f_{n}$ as $x \to p$).
     \item $|f_{n}(p) - F(p)| < \frac{\epsilon}{3}$ (by uniform convergence at $p$).
 \end{itemize}
 
@@ -212,6 +223,6 @@ The proof for preserving uniform continuity is precisely identical, except that 
 If $P$ holds for continuous functions, and every $\epsilon$ and $\delta$ during the proof is chosen independently of any particular point, then $P$ also holds for uniformly continuous functions.
 \end{center}
 
-It intuitively checks out, but how to actually formalise such a thing on paper, let alone on a machine, is beyond me at the moment.
+It intuitively checks out, but how to actually formalise such a thing on paper, let alone on a machine, is beyond me.
 
 \end{document}
