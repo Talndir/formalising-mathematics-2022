@@ -8,7 +8,7 @@ import project1.continuity
 
 namespace project1
 
-/- Definitions of pointwise and uniform convergence. -/
+/-- Definitions of pointwise and uniform convergence. -/
 def converges (f : ℕ → ℝ → ℝ) (F : ℝ → ℝ) : Prop :=
   ∀ x : ℝ, tendsto (λ n, f n x) (F x)
 
@@ -27,7 +27,7 @@ def unif_converges_def {f : ℕ → ℝ → ℝ} {F : ℝ → ℝ} :
   unif_converges f F ↔ ∀ ε > 0, ∃ B : ℕ, ∀ n, B ≤ n → ∀ x : ℝ, |f n x - F x| < ε :=
 by refl
 
-/- Uniform convergence implies pointwise convergence. -/
+/-- Uniform convergence implies pointwise convergence. -/
 theorem unif_converges_imp_converges {f : ℕ → ℝ → ℝ} {F : ℝ → ℝ}
   (h : unif_converges f F) : converges f F :=
 begin
@@ -42,7 +42,7 @@ begin
   exact hB n hn x,
 end
 
-/- Uniform convergence preserves continuity. -/
+/-- Uniform convergence preserves continuity. -/
 theorem unif_converges_preserves_continuous {f : ℕ → ℝ → ℝ} {F : ℝ → ℝ} {p : ℝ}
   (hf : unif_converges f F) (hc : ∀ n : ℕ, continuous (f n) p) : continuous F p :=
 begin
@@ -66,7 +66,7 @@ begin
   split; linarith
 end
 
-/- Uniform convergence preserves uniform continuity. -/
+/-- Uniform convergence preserves uniform continuity. -/
 theorem unif_converges_preserves_unif_continuous {f : ℕ → ℝ → ℝ} {F : ℝ → ℝ}
   (hf : unif_converges f F) (hc : ∀ n : ℕ, unif_continuous (f n)): unif_continuous F :=
 begin

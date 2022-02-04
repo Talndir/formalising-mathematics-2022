@@ -7,7 +7,7 @@ import data.polynomial.eval
 
 namespace project1
 
-/- Definition of uniform continuity. -/
+/-- Definition of uniform continuity. -/
 def unif_continuous (f : ℝ → ℝ) : Prop :=
   ∀ ε, 0 < ε → ∃ δ > 0, ∀ x y : ℝ, 0 < |x - y| ∧ |x - y| < δ → |f x - f y| < ε
 
@@ -15,7 +15,7 @@ theorem unif_continuous_def {f : ℝ → ℝ} :
   unif_continuous f ↔ ∀ ε, 0 < ε → ∃ δ > 0, ∀ x y : ℝ, 0 < |x - y| ∧ |x - y| < δ → |f x - f y| < ε :=
 by refl
 
-/- Constant functions are uniformly continuous. -/
+/-- Constant functions are uniformly continuous. -/
 theorem unif_continuous_const (c : ℝ) :
   unif_continuous (λ x, c) :=
 begin
@@ -26,7 +26,7 @@ begin
   simpa using hε,
 end
 
-/- The identity function is uniformly continuous. -/
+/-- The identity function is uniformly continuous. -/
 theorem unif_continuous_id :
   unif_continuous id :=
 begin
@@ -36,7 +36,7 @@ begin
   simp only [and_imp, imp_self, forall_const, id.def, implies_true_iff],
 end
 
-/- The sum of uniformly continuous functions is uniformly continuous. -/
+/-- The sum of uniformly continuous functions is uniformly continuous. -/
 theorem unif_continuous_add {f g : ℝ → ℝ}
   (hf : unif_continuous f) (hg : unif_continuous g) : unif_continuous (λ x, f x + g x) :=
 begin
@@ -56,7 +56,7 @@ begin
   exact h,
 end
 
-/- If f is uniformly continuous, so is cf. -/
+/-- If f is uniformly continuous, so is cf. -/
 theorem unif_continuous_const_mul {f : ℝ → ℝ} (c : ℝ)
   (hf : unif_continuous f) : unif_continuous (λ x, c * f x) :=
 begin
@@ -80,7 +80,7 @@ begin
     exact hf (ε/|c|) h },
 end
 
-/- Defintion of continuity. -/
+/-- Defintion of continuity. -/
 def continuous (f : ℝ → ℝ) (p : ℝ) : Prop :=
   limit f p (f p)
 
@@ -92,27 +92,27 @@ theorem continuous_def2 {f : ℝ → ℝ} {p : ℝ} :
   continuous f p ↔ ∀ ε, 0 < ε → ∃ δ > 0, ∀ x : ℝ, 0 < |x - p| ∧ |x - p| < δ → |f x - f p| < ε :=
 by refl
 
-/- The sum of continuous functions is continuous. -/
+/-- The sum of continuous functions is continuous. -/
 theorem continuous_add {f g : ℝ → ℝ} {p : ℝ}
   (hf : continuous f p) (hg : continuous g p) : continuous (λ x, f x + g x) p :=
 limit_add hf hg
 
-/- The product of continuous functions is continuous. -/
+/-- The product of continuous functions is continuous. -/
 theorem continuous_mul {f g : ℝ → ℝ} {p : ℝ}
   (hf : continuous f p) (hg : continuous g p) : continuous (λ x, f x * g x) p :=
 limit_mul hf hg
 
-/- A constant multiplied by a continuous function is continuous. -/
+/-- A constant multiplied by a continuous function is continuous. -/
 theorem continuous_const_mul {f : ℝ → ℝ} {p : ℝ}
   (h : continuous f p) (c : ℝ) : continuous (λ x, c * f x) p :=
 limit_const_mul h c
 
-/- Raising a continuous function to a non-negative power preserves continuity. -/
+/-- Raising a continuous function to a non-negative power preserves continuity. -/
 theorem continuous_nonneg_pow {f : ℝ → ℝ} {p : ℝ}
   (h : continuous f p) (n : ℕ) : continuous (λ x, (f x) ^ n) p :=
 limit_nonneg_pow h n
 
-/- Uniform continuity implies continuity everywhere. -/
+/-- Uniform continuity implies continuity everywhere. -/
 theorem unif_continuous_impl_continuous {f : ℝ → ℝ} :
   unif_continuous f → ∀ x : ℝ, continuous f x :=
 begin
@@ -130,7 +130,7 @@ begin
   simpa [abs_sub_comm] using hf',
 end
 
-/- Polynomials are continuous. -/
+/-- Polynomials are continuous. -/
 theorem continuous_polynomial (f : polynomial ℝ) :
   ∀ x : ℝ, continuous (λ y, f.eval y) x :=
 begin

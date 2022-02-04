@@ -6,8 +6,7 @@ import data.real.sqrt
 
 namespace project1
 
-/- Definition of the (two-sided) limit of a function. -/
-
+/-- Definition of the (two-sided) limit of a function. -/
 def limit (f : ℝ → ℝ) (p : ℝ) (L : ℝ) : Prop :=
   ∀ ε > 0, ∃ δ > 0, ∀ x : ℝ, 0 < |x - p| ∧ |x - p| < δ → |f x - L| < ε
 
@@ -15,7 +14,7 @@ theorem limit_def {f : ℝ → ℝ} {p L : ℝ} :
   limit f p L ↔ ∀ ε, 0 < ε → ∃ δ > 0, ∀ x : ℝ, 0 < |x - p| ∧ |x - p| < δ → |f x - L| < ε :=
 by refl
 
-/- Constant functions tend to the constant everywhere. -/
+/-- Constant functions tend to the constant everywhere. -/
 theorem limit_const (L : ℝ) :
   ∀ p : ℝ, limit (λ x, L) p L :=
 begin
@@ -32,7 +31,7 @@ begin
   { intros _ _, exact hε },
 end
 
-/- If f → L and g → M at (f + g) → (L + M).
+/-- If f → L and g → M at (f + g) → (L + M).
    I.e. Limit of sum is sum of limits. -/
 theorem limit_add {f g : ℝ → ℝ} {p L M : ℝ}
   (hf : limit f p L) (hg : limit g p M) : limit (λ x, f x + g x) p (L + M) :=
@@ -54,7 +53,7 @@ begin
   exact h,
 end
 
-/- If f -> L then cF -> cL. -/
+/-- If f -> L then cF -> cL. -/
 theorem limit_const_mul {f : ℝ → ℝ} {p L : ℝ}
   (hf : limit f p L) (c : ℝ) : limit (λ x, c * f x) p (c * L) :=
 begin
@@ -81,7 +80,7 @@ begin
     exact hf (ε/|c|) h },
 end
 
-/- If f -> L then f² -> L². -/
+/-- If f -> L then f² -> L². -/
 theorem limit_square {f : ℝ → ℝ} {p L : ℝ}
   (h : limit f p L) : limit (λ x, f x * f x) p (L * L) :=
 begin
@@ -157,7 +156,7 @@ begin
   exact lt_of_le_of_lt he he',
 end
 
-/- If f -> L and g -> M then fg -> LM. -/
+/-- If f -> L and g -> M then fg -> LM. -/
 theorem limit_mul {f g : ℝ → ℝ} {p L M : ℝ}
   (hf : limit f p L) (hg : limit g p M) : limit (λ x, f x * g x) p (L * M) :=
 begin
@@ -182,7 +181,7 @@ begin
   ) (1/2)
 end
 
-/- If f -> L and n : ℕ then fⁿ -> Lⁿ. -/
+/-- If f -> L and n : ℕ then fⁿ -> Lⁿ. -/
 theorem limit_nonneg_pow {f : ℝ → ℝ} {p L : ℝ}
   (h : limit f p L) (n : ℕ) : limit (λ x, (f x) ^ n) p (L ^ n) :=
 begin
@@ -209,7 +208,7 @@ theorem limit_right_def {f : ℝ → ℝ} {p L : ℝ} :
   limit_right f p L ↔ ∀ ε, 0 < ε → ∃ δ > 0, ∀ x : ℝ, p < x ∧ x - p < δ → |f x - L| < ε :=
 by refl
 
-/- The two-sided limit exists iff the left and right limits agree. -/
+/-- The two-sided limit exists iff the left and right limits agree. -/
 theorem limit_agree_iff {f : ℝ → ℝ} {p L : ℝ} :
   limit f p L ↔ limit_left f p L ∧ limit_right f p L :=
 begin
