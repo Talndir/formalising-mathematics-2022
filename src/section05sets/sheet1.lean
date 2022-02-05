@@ -79,40 +79,54 @@ Let's prove some theorems.
 
 example : A ⊆ A :=
 begin
-  sorry,
+  refl,
 end
 
 example : A ⊆ B → B ⊆ C → A ⊆ C :=
 begin
-  sorry,
+  intros h1 h2 x hx,
+  exact h2 (h1 hx),
 end
 
 example : A ⊆ A ∪ B :=
 begin
-  sorry,
+  intros x hx,
+  left,
+  exact hx,
 end
 
 example : A ∩ B ⊆ A :=
 begin
-  sorry,
+  rintros x ⟨ha, -⟩,
+  exact ha,
 end
 
 example : A ⊆ B → A ⊆ C → A ⊆ (B ∩ C) :=
 begin
-  sorry,
+  intros h1 h2 x hx,
+  split,
+  { exact h1 hx },
+  { exact h2 hx }
 end
 
 example : B ⊆ A → C ⊆ A → B ∪ C ⊆ A :=
 begin
-  sorry,
+  intros h1 h2 x hx,
+  cases hx with hb hc,
+  { exact h1 hb },
+  { exact h2 hc }
 end
 
 example : A ⊆ B → C ⊆ D → A ∪ C ⊆ B ∪ D :=
 begin
-  sorry,
+  intros h1 h2 x hx,
+  cases hx with ha hc,
+  { left, exact h1 ha },
+  { right, exact h2 hc }
 end
 
 example : A ⊆ B → C ⊆ D → A ∩ C ⊆ B ∩ D :=
 begin
-  sorry,
+  rintros h1 h2 x ⟨ha, hc⟩,
+  exact ⟨h1 ha, h2 hc⟩,
 end

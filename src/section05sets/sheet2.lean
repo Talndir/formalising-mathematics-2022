@@ -47,30 +47,39 @@ open set
 
 example : x ∈ (univ : set X) := 
 begin
-  sorry
+  triv,
 end
 
 example : x ∈ (∅ : set X) → false :=
 begin
-  sorry
+  intro h,
+  cases h
 end
 
 example : A ⊆ univ :=
 begin
-  sorry
+  intros _ _,
+  triv,
 end
 
 example : ∅ ⊆ A :=
 begin
-  sorry
+  intros _ h,
+  cases h,
 end
 
 example : A ∩ ∅ = ∅ :=
 begin
-  sorry
+  ext,
+  split;
+  rintro ⟨ha, he⟩,
+  exact he,
 end
 
 example : A ∪ univ = univ :=
 begin
-  sorry
+  ext,
+  split,
+  { intro _, triv },
+  { intro _, right, triv }
 end
