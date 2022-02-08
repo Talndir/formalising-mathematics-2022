@@ -134,7 +134,10 @@ we can make it a `simp` lemma.
 
 @[simp] theorem inv_mem_iff {x : G} : x⁻¹ ∈ H ↔ x ∈ H := 
 begin
-  sorry
+  split; intro h,
+  { have h' : (x⁻¹)⁻¹ ∈ H := H.inv_mem h,
+    simpa using h', },
+  { exact H.inv_mem h }
 end
 
 -- We could prove a bunch more theorems here. Let's just do two more.
@@ -142,37 +145,21 @@ end
 theorem mul_mem_cancel_left {x y : G} (hx : x ∈ H) :
   x * y ∈ H ↔ y ∈ H :=
 begin
-  sorry
+  split; intro h,
+  { have hx' : x⁻¹ ∈ H := H.inv_mem hx,
+    have h' : x⁻¹ * (x * y) ∈ H := H.mul_mem hx' h,
+    simpa using h' },
+  { exact H.mul_mem hx h }
 end
 
 theorem mul_mem_cancel_right {x y : G} (hx : x ∈ H) :
   y * x ∈ H ↔ y ∈ H :=
 begin
-  sorry
-end
-
-/-- The predicate saying that G is abelian. -/
-def is_abelian (G : Type) [group G] : Prop :=
-∀ a b : G, a * b = b * a
-
--- The ``group`` tactic solves identities in groups, like the
--- ``ring`` tactic does in rings.
-
-/-- `conjugate H g` is the subgroup conjugate `gHg⁻¹` of `H`. -/
-def conjugate (H : mysubgroup G) (g : G) : mysubgroup G :=
-{ carrier := { a : G | ∃ h ∈ H, a = g * h * g⁻¹ },
-  one_mem' := begin sorry end,
-  mul_mem' := begin sorry end,
-  inv_mem' := begin sorry end,
-}
-
-/-- A subgroup is normal iff it's equal to all its conjugates. -/
-def is_normal {G : Type} [group G] (H : mysubgroup G) : Prop :=
-∀ g : G, conjugate H g = H
-
-example (h_ab : is_abelian G) (H : mysubgroup G) : is_normal H :=
-begin
-  sorry,
+  split; intro h,
+  { have hx' : x⁻¹ ∈ H := H.inv_mem hx,
+    have h' : y * x * x⁻¹ ∈ H := H.mul_mem h hx',
+    simpa using h' },
+  { exact H.mul_mem h hx }
 end
 
 end mysubgroup

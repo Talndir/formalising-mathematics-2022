@@ -84,13 +84,23 @@ but it can't do anything with it if it's a variable.
 /-- The limit of the constant sequence with value 37 is 37. -/
 theorem tendsto_thirtyseven : tendsto (λ n, 37) 37 :=
 begin
-  sorry,
+  rw tendsto_def,
+  intros ε εgt0,
+  use 0,
+  intros n ngte0,
+  norm_num,
+  exact εgt0
 end
 
 /-- The limit of the constant sequence with value `c` is `c`. -/
 theorem tendsto_const (c : ℝ) : tendsto (λ n, c) c :=
 begin
-  sorry,
+  rw tendsto_def,
+  intros ε εgt0,
+  use 0,
+  intros n ngte0,
+  norm_num,
+  exact εgt0
 end
 
 /-- If `a(n)` tends to `t` then `a(n) + c` tends to `t + c` -/
@@ -98,7 +108,10 @@ theorem tendsto_add_const {a : ℕ → ℝ} {t : ℝ} (c : ℝ)
   (h : tendsto a t) :
   tendsto (λ n, a n + c) (t + c) :=
 begin
-  sorry,
+  rw tendsto_def,
+  norm_num,
+  --rw ← tendsto_def,
+  exact h
   -- hints: make sure you know the maths proof!
   -- use `cases` to deconstruct an `exists`
   -- hypothesis, and `specialize` to specialize
@@ -112,7 +125,23 @@ end
 example {a : ℕ → ℝ} {t : ℝ} (ha : tendsto a t) :
   tendsto (λ n, - a n) (-t) :=
 begin
-  sorry,
+  /-
+  rw tendsto_def,
+  rw tendsto_def at ha,
+  intros ε εgt0,
+  specialize ha ε εgt0,
+  cases ha with b hb,
+  use b,
+  intros n bn,
+  specialize hb n bn,
+  norm_num,
+  rw abs_sub_comm t (a n),
+  exact hb
+  -/
+  rw tendsto_def at ha ⊢,
+  simp_rw abs_sub_comm,
+  norm_num,
+  exact ha
   -- Try this one. Where do you get stuck?
   -- The problem is that you probably don't
   -- know any API for the absolute value function |.|.

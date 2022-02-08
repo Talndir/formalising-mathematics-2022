@@ -5,7 +5,7 @@ Author : Kevin Buzzard
 -/
 
 import tactic -- imports all the Lean tactics
-import solutions.section03groups.sheet1 -- imports our definition of `mygroup`
+import mysolutions.section03groups.sheet1 -- imports our definition of `mygroup`
 
 /-!
 
@@ -53,14 +53,29 @@ first.
 
 -/
 
+lemma mul_left_cancel (a b c : G) : a * b = a * c → b = c :=
+begin
+  intro h,
+  have h' : a⁻¹ * a * b = a⁻¹ * a * c := by rwa [mul_assoc, h, ← mul_assoc],
+  rwa [inv_mul_self, one_mul, one_mul] at h',
+end
+
+lemma mul_eq_of_eq_inv_mul (a b c : G) : b = a⁻¹ * c → a * b = c :=
+begin
+  intro h,
+  have h' : a⁻¹ * (a * b) = a⁻¹ * c := by rwa [← mul_assoc, inv_mul_self, one_mul],
+  apply mul_left_cancel,
+  exact h',
+end
+
 lemma mul_one (a : G) : a * 1 = a :=
 begin
-  sorry,
+  exact mul_eq_of_eq_inv_mul a 1 a (inv_mul_self a).symm,
 end
 
 lemma mul_inv_self (a : G) : a * a⁻¹ = 1 :=
 begin
-  sorry,
+  exact mul_eq_of_eq_inv_mul a (a⁻¹) 1 (mul_one (a⁻¹)).symm,
 end
 
 def to_mygroup (G : Type) [myweakgroup G] : mygroup G :=
@@ -88,3 +103,10 @@ class my_even_weaker_group (G : Type)
 (mul_assoc : ∀ a b c : G, (a * b) * c = a * (b * c))
 (mul_one : ∀ a : G, a * 1 = a)
 (inv_mul_self : ∀ a : G, a⁻¹ * a = 1)
+
+/- Counterexample: G = {1, x} where
+    1 * 1 = 1
+    1 * x = 1
+    x * 1 = x
+    x * x = x
+-/

@@ -64,12 +64,12 @@ See if you can prove all seven using (for the most part) the `rw` tactic.
 
 @[simp] lemma inv_mul_cancel_left : a⁻¹ * (a * b) = b :=
 begin
-  sorry
+  rw [← mul_assoc, inv_mul_self, one_mul],
 end
 
 @[simp] lemma mul_inv_cancel_left : a * (a⁻¹ * b) = b :=
 begin
-  sorry
+  rw [← mul_assoc, mul_inv_self, one_mul],
 end
 
 lemma left_inv_eq_right_inv {a b c : G} (h1 : b * a = 1) (h2 : a * c = 1) : 
@@ -77,27 +77,36 @@ lemma left_inv_eq_right_inv {a b c : G} (h1 : b * a = 1) (h2 : a * c = 1) :
 begin
   -- hint for this one : establish the auxiliary fact
   -- that `b * (a * c) = (b * a) * c` with the `have` tactic.
-  sorry,
+  have h : b * (a * c) = (b * a) * c := by rw mul_assoc,
+  rwa [h1, h2, one_mul, mul_one] at h,
 end
 
 lemma mul_eq_one_iff_eq_inv : a * b = 1 ↔ a⁻¹ = b :=
 begin
-  sorry,
+  have hab : a⁻¹ * (a * b) = b := by rw inv_mul_cancel_left,
+  split; intro h,
+  { rwa [h, mul_one] at hab, },
+  { rwa [← h, mul_inv_self], }
 end
 
 @[simp] lemma one_inv : (1 : G)⁻¹ = 1 :=
 begin
-  sorry,
+  nth_rewrite 1 ← mul_inv_self (1 : G),
+  rwa one_mul,
 end
 
 @[simp] lemma inv_inv : (a⁻¹)⁻¹ = a :=
 begin
-  sorry,
+  have h : a * a⁻¹ * (a⁻¹)⁻¹ = a * (a⁻¹ * (a⁻¹)⁻¹) := by rwa mul_assoc,
+  rwa [mul_inv_self, mul_inv_self, one_mul, mul_one] at h,
 end
 
 @[simp] lemma mul_inv_rev : (a * b)⁻¹ = b⁻¹ * a⁻¹ := 
 begin
-  sorry,
+  have h : (b⁻¹ * (a⁻¹ * a * b)) * (a * b)⁻¹ = b⁻¹ * a⁻¹ * (a * b * (a * b)⁻¹),
+  { rw [← mul_assoc, ← mul_assoc, mul_assoc, mul_assoc],
+    nth_rewrite 1 ← mul_assoc, },
+  rwa [mul_inv_self, mul_one, inv_mul_self, one_mul, inv_mul_self, one_mul] at h,
 end
 
 /-
@@ -115,10 +124,12 @@ example (G : Type) [mygroup G] (a b : G) :
   (b⁻¹ * a⁻¹)⁻¹ * 1⁻¹⁻¹ * b⁻¹ * (a⁻¹ * a⁻¹⁻¹⁻¹) * a = 1 := by simp
 
 -- bonus puzzle : if g^2=1 for all g in G, then G is abelian
-example (G : Type) [mygroup G] (h : ∀ g : G, g * g = 1) :
+example (G : Type) [mygroup G] (hyp : ∀ g : G, g * g = 1) :
   ∀ g h : G, g * h = h * g :=
 begin
-  sorry
+  intros g h,
+  have hp : (h * g) * (h * g) * g * h = h * g * (h * (g * g) * h) := by simp,
+  rwa [hyp (h * g), one_mul, hyp g, mul_one, hyp h, mul_one] at hp,
 end
 
 end mygroup

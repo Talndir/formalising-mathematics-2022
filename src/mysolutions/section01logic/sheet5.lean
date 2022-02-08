@@ -26,50 +26,82 @@ variables (P Q R S : Prop)
 
 example : P ↔ P :=
 begin
-  sorry
+  refl
 end
 
 example : (P ↔ Q) → (Q ↔ P) :=
 begin
-  sorry
+  intro pq,
+  rw pq
 end
 
 example : (P ↔ Q) ↔ (Q ↔ P) :=
 begin
-  sorry
+  split,
+  { intro pq,
+    rw pq },
+  { intro qp,
+    rw qp }
 end
 
 example : (P ↔ Q) → (Q ↔ R) → (P ↔ R) :=
 begin
-  sorry
+  intros pq qr,
+  rwa pq
 end
 
 example : P ∧ Q ↔ Q ∧ P :=
 begin
-  sorry
+  split,
+  { rintro ⟨p, q⟩,
+    exact ⟨q, p⟩ },
+  { rintro ⟨q, p⟩,
+    exact ⟨p, q⟩ }
 end
 
 example : ((P ∧ Q) ∧ R) ↔ (P ∧ (Q ∧ R)) :=
 begin
-  sorry
+  split,
+  { rintro ⟨⟨p, q⟩, r⟩,
+    exact ⟨p, ⟨q, r⟩⟩ },
+  { rintro ⟨p, q, r⟩,
+    exact ⟨⟨p, q⟩, r⟩ }
 end
 
 example : P ↔ (P ∧ true) :=
 begin
-  sorry
+  split,
+  { intro p,
+    split,
+    exact p, triv  },
+  { rintro ⟨p, -⟩,
+    exact p }
 end
 
 example : false ↔ (P ∧ false) :=
 begin
-  sorry
+  split,
+  { intro f, cases f },
+  { rintro ⟨-,f⟩, exact f }
 end
 
 example : (P ↔ Q) → (R ↔ S) → (P ∧ R ↔ Q ∧ S) :=
 begin
-  sorry
+  intros pq rs,
+  split,
+  { rintro ⟨p, r⟩,
+    rw [← pq, ← rs],
+    exact ⟨p, r⟩ },
+  { rintro ⟨q, s⟩,
+    rw [pq, rs],
+    exact ⟨q, s⟩ }
 end
 
 example : ¬ (P ↔ ¬ P) :=
 begin
-  sorry,
+  intro pnp,
+  cases pnp with p np,
+  by_cases h : P,
+  { exact p h h },
+  { exact h (np h) }
 end

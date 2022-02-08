@@ -52,41 +52,41 @@ see if you can start beginning to guess what various lemmas should be called.
 
 example (x : ℝ) : |(-x)| = |x| :=
 begin
-  sorry
+  exact abs_neg x
 end
 
 example (x y : ℝ) : |x - y| = |y - x| :=
 begin
-  sorry
+  exact abs_sub_comm x y
 end 
 
 example (A B C : ℕ) : max A B ≤ C ↔ A ≤ C ∧ B ≤ C :=
 begin
-  sorry
+  exact max_le_iff
 end
 
 example (x y : ℝ) : |x| < y ↔ -y < x ∧ x < y :=
 begin
-  sorry
+  exact abs_lt
 end
 
 example (ε : ℝ) (hε : 0 < ε) : 0 < ε / 2 :=
 begin
-  sorry,
+  linarith
 end
 
 example (a b x y : ℝ) (h1 : a < x) (h2 : b < y) : a + b < x + y :=
 begin
-  sorry,
+  linarith
 end
 
 example (ε : ℝ) (hε : 0 < ε) : 0 < ε / 3 :=
 begin
-  sorry,
+  linarith
 end
 
 example (a b c d x y : ℝ) (h1 : a + c < x) (h2 : b + d < y) :
   a + b + c + d < x + y :=
 begin
-  sorry
+  linarith
 end

@@ -35,55 +35,70 @@ variables (P Q R : Prop)
 
 example : ¬ true → false :=
 begin
-  sorry
+  intro nt,
+  apply nt,
+  triv
 end
 
 example : false → ¬ true :=
 begin
-  sorry
+  triv
 end
 
 example : ¬ false → true :=
 begin
-  sorry
+  intro nf,
+  triv
 end
 
 example : true → ¬ false :=
 begin
-  sorry
+  intro t,
+  triv
 end
 
 example : false → ¬ P :=
 begin
-  sorry
+  triv
 end
 
 example : P → ¬ P → false :=
 begin
-  sorry
+  intro p,
+  triv
 end
 
 example : P → ¬ (¬ P) :=
 begin
-  sorry
+  intro p,
+  triv
 end
 
 example : (P → Q) → (¬ Q → ¬ P) :=
 begin
-  sorry
+  intros pq nq p,
+  exact nq (pq p)
 end
 
 example : ¬ ¬ false → false :=
 begin
-  sorry
+  intro nnf,
+  apply nnf,
+  triv
 end
 
+-- Not constructive - uses contradiction
 example : ¬ ¬ P → P :=
 begin
-  sorry
+  intro nnp,
+  by_contra np,
+  exact nnp np
 end
 
+-- Also not constructive (although its reverse is constructive)
 example : (¬ Q → ¬ P) → (P → Q) :=
 begin
-  sorry,
+  intros nqnp p,
+  by_contra nq,
+  exact nqnp nq p
 end

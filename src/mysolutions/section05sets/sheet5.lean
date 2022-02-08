@@ -36,51 +36,63 @@ variables
 
 example : A ∪ A = A :=
 begin
-  sorry
+  ext,
+  split,
+  { rintro (h | h);
+    exact h, },
+  { intro h,
+    left,
+    exact h, }
 end
 
 example : A ∩ A = A :=
 begin
-  sorry
-end
-
-example : A ∩ ∅ = ∅ :=
-begin
-  sorry
-end
-
-example : A ∪ univ = univ :=
-begin
-  sorry
+  ext,
+  split; intro h,
+  { exact h.left, },
+  { exact ⟨h,h⟩, }
 end
 
 example : A ⊆ B → B ⊆ A → A = B :=
 begin
-  sorry
+  intros h1 h2,
+  ext,
+  split; intro h,
+  { exact h1 h, },
+  { exact h2 h, }
 end
 
 example : A ∩ B = B ∩ A :=
 begin
-  sorry
+  rw [inter_def, inter_def],
+  simp_rw and_comm,
 end
 
 example : A ∩ (B ∩ C) = (A ∩ B) ∩ C :=
 begin
-  sorry
+  ext,
+  repeat { rw mem_inter_iff },
+  rw and_assoc,
 end
 
 example : A ∪ (B ∪ C) = (A ∪ B) ∪ C :=
 begin
-  sorry
+  ext,
+  repeat { rw mem_union },
+  rw or_assoc,
 end
 
 example : A ∪ (B ∩ C) = (A ∪ B) ∩ (A ∪ C) :=
 begin
-  sorry,
+  ext,
+  rw [mem_inter_iff, mem_union, mem_union, mem_union, mem_inter_iff],
+  rw or_and_distrib_left,
 end
 
 example : A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C) :=
 begin
-  sorry,
+  ext,
+  rw [mem_inter_iff, mem_union, mem_union, mem_inter_iff, mem_inter_iff],
+  rw and_or_distrib_left,
 end
 
